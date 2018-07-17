@@ -41,6 +41,20 @@
 
 (defn ^:private stream-logs
   [context args source-stream]
+  "This is a STREAMER, like a resolver but it is passed three values:
+
+1. The application context
+2. The field arguments
+3. The source stream callback
+The first two are the same as a field resolver; the third is a function that accepts a single value.
+The streamer should perform whatever operations are necessary for it to set up the stream of values; 
+typically this is registering as a listener for updates to some form of publish/subscribe system.
+  
+  *latest-log-event is --CLOSURED IN-- as it is defined on L30
+  
+As new values are published, the streamer must pass those values to the source stream callback.
+Further, the streamer must return a function to clean up the stream when the subscription is terminated.
+ "
   (let [{:keys [severity]} args
         watch-key (gensym)]
     (add-watch *latest-log-event watch-key
