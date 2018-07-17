@@ -68,6 +68,21 @@ Further, the streamer must return a function to clean up the stream when the sub
     #(remove-watch *latest-log-event watch-key)))
 
 
+
+;; subscriptions-schema.edn
+;;
+;; {:objects
+;;  {:LogEvent
+;;   {:fields
+;;    {:severity {:type String}
+;;     :message {:type String}}}}
+
+;;  :subscriptions
+;;  {:logs
+;;   {:type :LogEvent
+;;    :args {:severity {:type String}}
+;;    :stream :stream-logs}}}
+
 (def ^:private compiled-schema
   (-> (io/resource "subscriptions-schema.edn")
       slurp
@@ -77,6 +92,7 @@ Further, the streamer must return a function to clean up the stream when the sub
 
 (defn ^:private execute
   [query-string vars]
+  "Mock real lacinia/execute without DB ????"
   (let [prepared-query (-> (parser/parse-query compiled-schema query-string)
                            (parser/prepare-with-query-variables vars))
         *cleanup-callback (promise)
